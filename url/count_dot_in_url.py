@@ -23,7 +23,7 @@ def calculate_uf2(url):
         
     except Exception as e:
         print(f"Lỗi khi xử lý URL: {str(e)}")
-        return 0.0  # Giá trị mặc định nếu có lỗi
+        return 0  # Giá trị mặc định nếu có lỗi
 
 # Ví dụ sử dụng
 if __name__ == "__main__":

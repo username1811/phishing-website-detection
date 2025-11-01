@@ -33,35 +33,7 @@ def is_suspicious_form_action(html_content):
         print(f"Lỗi khi xử lý HTML: {str(e)}")
         return False  # Giá trị mặc định nếu có lỗi
 
-def has_high_null_link_ratio(html_content):
-    """
-    Kiểm tra tỷ lệ null anchor link so với tổng anchor link.
-    
-    Args:
-        html_content (str): Nội dung HTML của trang web.
-    
-    Returns:
-        bool: True nếu tỷ lệ null anchor link > 0.34 (HF6 = 1), False nếu không (HF6 = 0).
-    """
-    try:
-        # Phân tích HTML bằng BeautifulSoup
-        soup = BeautifulSoup(html_content, 'html.parser')
-        
-        # Tìm tất cả các thẻ <a> có thuộc tính href
-        anchors = soup.find_all('a', href=True)
-        if not anchors:
-            return False  # Không có anchor link, coi là legitimate
-        
-        total_anchors = len(anchors)
-        null_anchors = sum(1 for a in anchors if a['href'].lower() in ['#', '#content', 'javascript:void(0)'])
-        
-        # Tính tỷ lệ null anchor link
-        ratio = null_anchors / total_anchors if total_anchors > 0 else 0
-        return ratio > 0.34
-        
-    except Exception as e:
-        print(f"Lỗi khi xử lý HTML: {str(e)}")
-        return False  # Giá trị mặc định nếu có lỗi
+
 
 # Ví dụ sử dụng
 if __name__ == "__main__":
@@ -94,5 +66,3 @@ if __name__ == "__main__":
         print(f"HTML Sample {html}:")
         hf5_value = is_suspicious_form_action(html)
         print(f"form is suspicious" if hf5_value else 'form is normal')
-        hf6_value = has_high_null_link_ratio(html)
-        print(f"high null link" if hf6_value else 'low null link')

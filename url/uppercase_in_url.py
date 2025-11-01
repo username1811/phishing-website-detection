@@ -1,34 +1,49 @@
+from urllib.parse import urlparse
+
 def has_uppercase_letter(url):
     """
-    Kiểm tra xem URL có chứa chữ cái viết hoa hay không.
-    
+    Kiểm tra xem DOMAIN của URL có chứa chữ cái viết hoa hay không.
+    (Chỉ xét phần domain, KHÔNG xét path, query, fragment)
+
     Args:
-        url (str): URL cần phân tích (ví dụ: 'http://ExAmPlE.com', 'https://www.example.com').
-    
+        url (str): URL cần phân tích (ví dụ: 'http://ExAmPlE.com/path/ABC?Q=XYZ')
+
     Returns:
-        bool: True nếu có chữ cái viết hoa trong URL (UF13 = 1), False nếu không (UF13 = 0).
+        bool: True nếu domain có chữ in hoa (UF13 = 1), False nếu không (UF13 = 0).
     """
     try:
-        # Kiểm tra sự hiện diện của bất kỳ chữ cái viết hoa nào trong URL
-        return any(char.isupper() for char in url if char.isalpha())
-        
+        # Phân tích URL
+        parsed = urlparse(url)
+        domain = parsed.netloc  # Chỉ lấy phần domain (ví dụ: ExAmPlE.com)
+
+        if not domain:
+            return False
+
+        # Kiểm tra có chữ cái in hoa trong domain
+        return any(char.isupper() for char in domain if char.isalpha())
+
     except Exception as e:
         print(f"Lỗi khi xử lý URL: {str(e)}")
-        return False  # Giá trị mặc định nếu có lỗi (coi là không có chữ viết hoa)
+        return False  # Mặc định: không có chữ in hoa
 
-# Ví dụ sử dụng
+
+# === VÍ DỤ SỬ DỤNG ===
 if __name__ == "__main__":
-    # Các ví dụ URL (tính đến 02:40 PM +07, Chủ nhật, 26/10/2025)
     urls = [
-        "http://ExAmPlE.com",         # Có chữ viết hoa
-        "https://www.example.com",    # Không có chữ viết hoa
-        "http://LOGIN.example.com",   # Có chữ viết hoa
-        "https://sub.domain.COM",     # Có chữ viết hoa
-        "http://invalid.url",         # Lỗi (giả định)
+        "http://ExAmPlE.com",                    # True → domain có hoa
+        "https://www.example.com",               # False → domain không hoa
+        "https://www.example.com/YIUY",          # False → path có hoa, nhưng domain không
+        "http://LOGIN.example.com",              # True → domain có hoa
+        "https://sub.domain.COM/path",           # True → domain có hoa
+        "http://example.com/ABC/DEF?Q=XYZ",      # False → chỉ path/query có hoa
+        "http://invalid.url",                    # False → domain không hợp lệ
+        "http://USER@password.com",              # True → USER có hoa
     ]
-    
+
+    print("KIỂM TRA CHỮ IN HOA TRONG DOMAIN (chỉ netloc)\n")
     for url in urls:
         has_upper = has_uppercase_letter(url)
-        status = "Có chữ viết hoa (UF13 = 1)" if has_upper else "Không có chữ viết hoa (UF13 = 0)"
+        status = "Có chữ in hoa (UF13 = 1)" if has_upper else "Không có chữ in hoa (UF13 = 0)"
         print(f"URL: {url}")
-        print(f"Kết quả: {status}\n")
+        print(f"   → Domain: {urlparse(url).netloc}")
+        print(f"   → Kết quả: {status}\n")
