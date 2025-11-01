@@ -18,10 +18,11 @@ conn.close()
 
 # Thêm cột đường dẫn HTML
 def get_html_path(website):
-    folder = 'folder1'  # Chỉ kiểm tra folder1 vì bạn đã sửa
-    path = os.path.join(folder, website)
-    if os.path.exists(path):
-        return path
+    folders = [f"dataset-part-{i}" for i in range(1, 9)]
+    for folder in folders:
+        path = os.path.join(folder, website)
+        if os.path.exists(path):
+            return path
     return None
 
 df['html_path'] = df['website'].apply(get_html_path)
