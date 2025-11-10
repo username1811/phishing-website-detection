@@ -120,12 +120,6 @@ if __name__ == "__main__":
     try:
         model = joblib.load("rf_phishing_model.pkl")
         print("✅ Đã load mô hình Random Forest.")
-        
-        # Debug: In expected feature names nếu có
-        if hasattr(model, 'feature_names_in_'):
-            print(f"📋 Tên đặc trưng từ model: {model.feature_names_in_.tolist()}")
-        else:
-            print("📋 Model không lưu tên đặc trưng (sklearn cũ). Đảm bảo FEATURE_ORDER đúng.")
             
     except FileNotFoundError:
         print("❌ Không tìm thấy file model 'rf_phishing_model.pkl'. Hãy chạy script train trước!")
