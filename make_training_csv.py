@@ -112,4 +112,4 @@ if __name__ == "__main__":
     OUTPUT_CSV = "training_features_test.csv"  # File test
     BASE_DIR = "."                            # Thư mục chứa dataset-part-*
 
-    create_training_csv_test(INPUT_CSV, OUTPUT_CSV, BASE_DIR, limit=1000)
+    create_training_csv_test(INPUT_CSV, OUTPUT_CSV, BASE_DIR, limit=80000)

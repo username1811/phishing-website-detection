@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.metrics import f1_score, classification_report, confusion_matrix
 import joblib
 
 # ======================================
@@ -38,8 +38,8 @@ X_train, X_test, y_train, y_test = train_test_split(
 # 3️⃣ Huấn luyện mô hình Random Forest
 # ======================================
 rf_model = RandomForestClassifier(
-    n_estimators=100, 
-    max_depth=7, 
+    n_estimators=300, 
+    max_depth=25, 
     random_state=42,
     bootstrap=True
 )
@@ -50,21 +50,21 @@ rf_model.fit(X_train, y_train)
 # 4️⃣ Đánh giá mô hình
 # ======================================
 y_pred = rf_model.predict(X_test)
-accuracy = accuracy_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred, average='weighted')  # Sử dụng weighted cho F1-score tổng quát
 
-print("🎯 Độ chính xác trên tập kiểm tra:", accuracy)
+print("🎯 F1-score trên tập kiểm tra:", f1)
 print("\n📋 Báo cáo phân loại:\n", classification_report(y_test, y_pred))
 
-# Kiểm tra overfitting
-train_acc = rf_model.score(X_train, y_train)
-print("Độ chính xác trên tập huấn luyện:", train_acc)
+# Kiểm tra overfitting bằng F1-score
+train_f1 = f1_score(y_train, rf_model.predict(X_train), average='weighted')
+print("F1-score trên tập huấn luyện:", train_f1)
 
 # ======================================
 # 5️⃣ Tinh chỉnh tham số (GridSearchCV)
 # ======================================
 param_grid = {
-    'max_depth': [3, 5, 7, 9, 11, None],
-    'n_estimators': [50, 100, 200],
+    'max_depth': [9,13,17,21,25,29,33, None],
+    'n_estimators': [100, 200, 300, 400],
     'max_features': ['sqrt', 'log2']
 }
 
@@ -72,14 +72,14 @@ grid_search = GridSearchCV(
     estimator=RandomForestClassifier(random_state=42),
     param_grid=param_grid,
     cv=5,
-    scoring='recall',
+    scoring='f1',  # Sử dụng F1-weighted làm metric chính
     n_jobs=-1
 )
 
 grid_search.fit(X_train, y_train)
 
 print("✅ Tham số tốt nhất:", grid_search.best_params_)
-print("🎯 Độ chính xác tốt nhất:", grid_search.best_score_)
+print("🎯 F1-score tốt nhất:", grid_search.best_score_)
 
 # Lưu model tốt nhất
 best_model = grid_search.best_estimator_
