@@ -1,0 +1,60 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phát Hiện Phishing URL</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f4f4f4; }
+        h1 { color: #333; text-align: center; }
+        form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input[type="text"] { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        input[type="submit"] { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; width: 100%; }
+        input[type="submit"]:hover { background: #0056b3; }
+        .result { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-top: 20px; }
+        .features { margin-top: 15px; }
+        .features ul { list-style: none; padding: 0; }
+        .features li { padding: 5px 0; border-bottom: 1px solid #eee; }
+        .warning { font-weight: bold; margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .warning.safe { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .warning.danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .error { color: red; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Phát Hiện Website Phishing</h1>
+    <form method="POST">
+        <label for="url">Nhập URL của website:</label>
+        <input type="text" id="url" name="url" placeholder="https://example.com" required>
+        <input type="submit" value="Kiểm Tra">
+    </form>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if url %}
+        <div class="result">
+            <h2>Kết Quả Cho URL: {{ url }}</h2>
+            
+            <div class="warning {{ 'safe' if label == 'Benign (0)' else 'danger' }}">
+                {{ warning }}
+            </div>
+            
+            <h3>Nhãn Dự Đoán: {{ label }}</h3>
+            <p>Xác Suất Benign: {{ prob_benign }}</p>
+            <p>Xác Suất Phishing: {{ prob_phishing }}</p>
+            
+            <div class="features">
+                <h3>Các Đặc Trưng Trích Xuất:</h3>
+                <ul>
+                    {% for key, value in features %}
+                        <li><strong>{{ key }}:</strong> {{ value }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+</body>
+</html>
